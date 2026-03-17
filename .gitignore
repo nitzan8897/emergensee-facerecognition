@@ -3,6 +3,9 @@
 *.compiled
 *.class
 
+#face_Db
+face_db/
+
 # Python
 __pycache__/
 *.py[cod]
