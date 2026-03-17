@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "EmergenSee AI Microservice — Face Recognition"
 authors = ["EmergenSee Engineering <engineering@emergensee.io>"]
 readme = "README.md"
-packages = [{ include = "emergensee", from = "src" }]
+packages = []
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -13,6 +13,8 @@ uvicorn = { extras = ["standard"], version = "^0.30.0" }
 pydantic = "^2.7.0"
 pydantic-settings = "^2.3.0"
 python-dotenv = "^1.0.0"
+python-multipart = "^0.0.9"
+motor = "^3.4.0"
 
 # --- AI / CV Libraries (uncomment when adapters are implemented) ---
 # opencv-python-headless = "^4.10.0"

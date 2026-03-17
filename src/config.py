@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     port: int = Field(default=8000, ge=1, le=65535)
     workers: int = Field(default=1, ge=1)
     log_level: LogLevel = Field(default=LogLevel.INFO)
+    face_db_path: str = Field(default="face_db")
+    recognition_threshold: float = Field(default=0.50, gt=0.0, lt=1.0)
+    detector_backend: str = Field(default="mtcnn")
+    mongo_uri: str = Field(default="mongodb://localhost:27017")
+    mongo_db_name: str = Field(default="emergensee")
 
 
 @lru_cache(maxsize=1)

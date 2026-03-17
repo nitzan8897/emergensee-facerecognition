@@ -5,7 +5,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from emergensee.config import get_settings
+from api.routers.faces import router as faces_router
+from config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +18,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         level=settings.log_level.value,
         format="%(asctime)s | %(levelname)-8s | %(name)s — %(message)s",
     )
-
-    logger.info("Starting up %s v%s [%s]", settings.app_name, settings.app_version, settings.environment)
+    logger.info(
+        "Starting up %s v%s [%s]",
+        settings.app_name,
+        settings.app_version,
+        settings.environment,
+    )
 
     yield
 
@@ -36,6 +41,8 @@ def create_app() -> FastAPI:
         redoc_url="/redoc" if settings.debug else None,
         lifespan=lifespan,
     )
+
+    app.include_router(faces_router)
 
     @app.get("/health", tags=["ops"], summary="Liveness probe")
     async def health_check() -> JSONResponse:
