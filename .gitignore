@@ -1,0 +1,81 @@
+# Prerequisites
+*.d
+*.compiled
+*.class
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# FastAPI / Web
+.env
+.env.*
+!.env.example
+
+# Logs and databases
+*.log
+*.sqlite
+*.sqlite3
+
+# AI / ML / Data (Crucial for your specific service)
+*.pt
+*.pth
+*.onnx
+*.h5
+*.hdf5
+*.weights
+models/
+datasets/
+data/
+*.csv
+*.parquet
+.ipynb_checkpoints/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Claude
+.claude/
