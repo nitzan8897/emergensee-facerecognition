@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from adapters.ai.deepface_adapter import DeepFaceAdapter
 from adapters.persistence.mongo_face_storage import MongoFaceStorage
+from application.delete_face import DeleteFaceUseCase
 from application.detect_faces import DetectFacesUseCase
 from application.recognize_faces import RecognizeFacesUseCase
 from application.register_face import RegisterFaceUseCase
@@ -28,7 +29,15 @@ def _get_mongo_db() -> AsyncIOMotorDatabase:
 @lru_cache(maxsize=1)
 def _get_deepface_adapter() -> DeepFaceAdapter:
     settings = get_settings()
-    return DeepFaceAdapter(_get_face_db_path(), settings.recognition_threshold, settings.detector_backend)
+    return DeepFaceAdapter(
+        _get_face_db_path(),
+        settings.recognition_threshold,
+        settings.min_detection_confidence,
+        settings.detector_backend,
+        settings.recognition_model,
+        settings.min_face_size_px,
+        settings.min_sharpness,
+    )
 
 
 @lru_cache(maxsize=1)
@@ -46,3 +55,7 @@ def get_recognize_use_case() -> RecognizeFacesUseCase:
 
 def get_register_use_case() -> RegisterFaceUseCase:
     return RegisterFaceUseCase(_get_mongo_storage())
+
+
+def get_delete_use_case() -> DeleteFaceUseCase:
+    return DeleteFaceUseCase(_get_mongo_storage())

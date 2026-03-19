@@ -28,7 +28,7 @@ class DetectedFaceSchema(BaseModel):
 
 
 class RecognitionResultSchema(BaseModel):
-    identity: str
+    identity: str | None
     confidence: float = Field(ge=0.0, le=1.0)
     bounding_box: BoundingBoxSchema
 
@@ -58,3 +58,7 @@ class RecognizeResponse(BaseModel):
 
 class RegisterResponse(BaseModel):
     registered_as: str
+
+
+class DeleteResponse(BaseModel):
+    deleted: str

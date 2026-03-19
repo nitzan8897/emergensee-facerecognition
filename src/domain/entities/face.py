@@ -17,6 +17,6 @@ class DetectedFace:
 
 @dataclass(frozen=True)
 class RecognitionResult:
-    identity: str
+    identity: str | None
     confidence: float
     bounding_box: BoundingBox

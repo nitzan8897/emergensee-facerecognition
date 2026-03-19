@@ -5,16 +5,18 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi import Form
 
 from api.schemas.face_schemas import (
+    DeleteResponse,
     DetectedFaceSchema,
     DetectResponse,
     RecognitionResultSchema,
     RecognizeResponse,
     RegisterResponse,
 )
+from application.delete_face import DeleteFaceUseCase
 from application.detect_faces import DetectFacesUseCase
 from application.recognize_faces import RecognizeFacesUseCase
 from application.register_face import RegisterFaceUseCase
-from dependencies import get_detect_use_case, get_recognize_use_case, get_register_use_case
+from dependencies import get_delete_use_case, get_detect_use_case, get_recognize_use_case, get_register_use_case
 
 router = APIRouter(prefix="/api/v1/faces", tags=["faces"])
 
@@ -86,3 +88,23 @@ async def register_face(
     image_bytes = await image.read()
     registered_as = await use_case.execute(name, image_bytes)
     return RegisterResponse(registered_as=registered_as)
+
+
+@router.delete(
+    "/{identity}",
+    response_model=DeleteResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Delete a registered face",
+    description="Removes all images and records for the given identity from both the database and disk.",
+)
+async def delete_face(
+    identity: str,
+    use_case: Annotated[DeleteFaceUseCase, Depends(get_delete_use_case)],
+) -> DeleteResponse:
+    deleted = await use_case.execute(identity)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Identity '{identity}' not found.",
+        )
+    return DeleteResponse(deleted=identity)
