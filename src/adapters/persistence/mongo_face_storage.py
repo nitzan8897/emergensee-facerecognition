@@ -1,4 +1,5 @@
 import asyncio
+import shutil
 import time
 from pathlib import Path
 
@@ -23,6 +24,13 @@ class MongoFaceStorage(FaceStoragePort):
             asyncio.to_thread(self._write_to_disk, identity, image_bytes),
         )
 
+    async def delete(self, identity: str) -> bool:
+        result, _ = await asyncio.gather(
+            self._delete_from_mongo(identity),
+            asyncio.to_thread(self._delete_from_disk, identity),
+        )
+        return result
+
     async def _persist_to_mongo(self, identity: str, image_bytes: bytes) -> None:
         await self._collection.insert_one({
             "identity": identity,
@@ -30,7 +38,16 @@ class MongoFaceStorage(FaceStoragePort):
             "registered_at": int(time.time()),
         })
 
+    async def _delete_from_mongo(self, identity: str) -> bool:
+        result = await self._collection.delete_many({"identity": identity})
+        return result.deleted_count > 0
+
     def _write_to_disk(self, identity: str, image_bytes: bytes) -> None:
         identity_dir = self._face_db_path / identity
         identity_dir.mkdir(parents=True, exist_ok=True)
         (identity_dir / f"{identity}_{int(time.time())}.jpg").write_bytes(image_bytes)
+
+    def _delete_from_disk(self, identity: str) -> None:
+        identity_dir = self._face_db_path / identity
+        if identity_dir.exists():
+            shutil.rmtree(identity_dir)
