@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     recognition_model: str = Field(default="ArcFace")
     min_face_size_px: int = Field(default=60, ge=20)
     min_sharpness: float = Field(default=60.0, ge=0.0)
+    recognition_timeout: float = Field(default=30.0, gt=0.0)
     mongo_uri: str = Field(default="mongodb://localhost:27017")
     mongo_db_name: str = Field(default="emergensee")
 

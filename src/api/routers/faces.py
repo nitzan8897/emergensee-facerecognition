@@ -1,10 +1,16 @@
+import asyncio
+import logging
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
-
 from fastapi import Form
 
+from config import get_settings
+
+logger = logging.getLogger(__name__)
+
 from api.schemas.face_schemas import (
+    BatchRegisterResponse,
     DeleteResponse,
     DetectedFaceSchema,
     DetectResponse,
@@ -65,7 +71,15 @@ async def recognize_faces(
 ) -> RecognizeResponse:
     _validate_image(image)
     image_bytes = await image.read()
-    results = await use_case.execute(image_bytes)
+    timeout = get_settings().recognition_timeout
+    try:
+        results = await asyncio.wait_for(use_case.execute(image_bytes), timeout=timeout)
+    except asyncio.TimeoutError:
+        logger.warning("Recognition timed out after %.0fs — returning 504", timeout)
+        raise HTTPException(
+            status_code=status.HTTP_504_GATEWAY_TIMEOUT,
+            detail=f"Recognition did not complete within {timeout:.0f}s. Try a lower-resolution image or fewer faces.",
+        )
     return RecognizeResponse(
         faces_found=len(results),
         results=[RecognitionResultSchema.from_domain(r) for r in results],
@@ -88,6 +102,48 @@ async def register_face(
     image_bytes = await image.read()
     registered_as = await use_case.execute(name, image_bytes)
     return RegisterResponse(registered_as=registered_as)
+
+
+@router.post(
+    "/register/batch",
+    response_model=BatchRegisterResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Register multiple face frames for one identity",
+    description=(
+        "Accepts 5–15 images of the same person from different angles. "
+        "Use this instead of /register when enrolling from a guided mobile capture session. "
+        "Each image is validated independently; partial success is allowed."
+    ),
+)
+async def register_face_batch(
+    images: Annotated[list[UploadFile], File(description="2–15 JPEG/PNG/WebP frames from the capture session")],
+    name: Annotated[str, Form(description="Identity name, e.g. 'John Doe'")],
+    use_case: Annotated[RegisterFaceUseCase, Depends(get_register_use_case)],
+) -> BatchRegisterResponse:
+    if not images:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="At least one image is required.")
+
+    accepted = 0
+    rejected = 0
+    for image in images:
+        if image.content_type not in _ALLOWED_TYPES:
+            rejected += 1
+            continue
+        image_bytes = await image.read()
+        if not image_bytes:
+            rejected += 1
+            continue
+        await use_case.execute(name, image_bytes)
+        accepted += 1
+
+    if accepted == 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="No valid images were accepted. Check content-type and payload.",
+        )
+
+    normalized = name.strip().lower().replace(" ", "_")
+    return BatchRegisterResponse(registered_as=normalized, frames_accepted=accepted, frames_rejected=rejected)
 
 
 @router.delete(

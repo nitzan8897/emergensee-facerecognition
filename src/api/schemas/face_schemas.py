@@ -62,3 +62,9 @@ class RegisterResponse(BaseModel):
 
 class DeleteResponse(BaseModel):
     deleted: str
+
+
+class BatchRegisterResponse(BaseModel):
+    registered_as: str
+    frames_accepted: int
+    frames_rejected: int
