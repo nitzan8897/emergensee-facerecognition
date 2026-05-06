@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 
 from api.routers.faces import router as faces_router
 from config import get_settings
+from dependencies import _get_deepface_adapter
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +25,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         settings.app_version,
         settings.environment,
     )
+
+    await _get_deepface_adapter().warm_up()
 
     yield
 
