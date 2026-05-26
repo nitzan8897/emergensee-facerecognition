@@ -10,4 +10,4 @@ export PORT=8000
 export WORKERS=1
 export MONGO_URI="mongodb://admin:bartar20%40CS@localhost:21771"
 
-exec python -m uvicorn main:app --host "$HOST" --port "$PORT" --workers "$WORKERS"
+exec venv/bin/python -m uvicorn main:app --host "$HOST" --port "$PORT" --workers "$WORKERS"
