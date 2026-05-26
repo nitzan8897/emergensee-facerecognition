@@ -31,7 +31,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # System dependencies required by OpenCV (libGL) and other CV libs.
 # Installed here (not in builder) so they are present in the final image.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgl1-mesa-glx \
+    libgl1 \
     libglib2.0-0 \
     libsm6 \
     libxext6 \
