@@ -8,6 +8,6 @@ export LOG_LEVEL=INFO
 export HOST=0.0.0.0
 export PORT=21771
 export WORKERS=1
-export MONGO_URI="mongodb://admin:bartar20%40CS@localhost:21771"
+export MONGO_URI="mongodb://admin:bartar20%40CS@localhost:27017"
 
 exec venv/bin/python -m uvicorn main:app --host "$HOST" --port "$PORT" --workers "$WORKERS"
