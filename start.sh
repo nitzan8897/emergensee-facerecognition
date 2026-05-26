@@ -3,7 +3,7 @@ set -e
 
 export PYTHONPATH="$(pwd)/src"
 export ENVIRONMENT=production
-export DEBUG=false
+export DEBUG=true
 export LOG_LEVEL=INFO
 export HOST=0.0.0.0
 export PORT=21771
