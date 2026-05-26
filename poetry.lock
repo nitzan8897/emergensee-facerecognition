@@ -1371,7 +1371,7 @@ files = [
 
 [package.dependencies]
 numpy = [
-    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
+    {version = ">=1.26.0", markers = "python_version == \"3.12\""},
     {version = ">=1.23.3", markers = "python_version >= \"3.11\""},
 ]
 
@@ -1584,7 +1584,7 @@ files = [
 [package.dependencies]
 numpy = [
     {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
-    {version = ">=1.23.5", markers = "python_version == \"3.11\""},
+    {version = ">=1.23.5", markers = "python_version >= \"3.11\""},
 ]
 
 [[package]]
@@ -1607,7 +1607,7 @@ files = [
 [package.dependencies]
 numpy = [
     {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
-    {version = ">=1.23.5", markers = "python_version >= \"3.11\""},
+    {version = ">=1.23.5", markers = "python_version == \"3.11\""},
 ]
 
 [[package]]
@@ -1733,7 +1733,7 @@ files = [
 [package.dependencies]
 typing-extensions = [
     {version = ">=4.12.0", markers = "python_version >= \"3.13\""},
-    {version = ">=4.6.0", markers = "python_version < \"3.13\""},
+    {version = ">=4.6.0"},
 ]
 
 [package.extras]
@@ -2962,6 +2962,38 @@ files = [
 tests = ["pytest", "pytest-cov"]
 
 [[package]]
+name = "tf-keras"
+version = "2.18.0"
+description = "Deep learning for humans."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+markers = "python_version >= \"3.13\""
+files = [
+    {file = "tf_keras-2.18.0-py3-none-any.whl", hash = "sha256:c431d04027eef790fcd3261cf7fdf93eb74f3cb32e05078b57b7f5a54bd53262"},
+    {file = "tf_keras-2.18.0.tar.gz", hash = "sha256:ebf744519b322afead33086a2aba872245473294affd40973694f3eb7c7ad77d"},
+]
+
+[package.dependencies]
+tensorflow = ">=2.18,<2.19"
+
+[[package]]
+name = "tf-keras"
+version = "2.21.0"
+description = "Deep learning for humans."
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+markers = "python_version < \"3.13\""
+files = [
+    {file = "tf_keras-2.21.0-py3-none-any.whl", hash = "sha256:f858bf3d97f892304e7fbcf5eb0942ed91674e27204f940a85de8c93cf07fe62"},
+    {file = "tf_keras-2.21.0.tar.gz", hash = "sha256:f9af0f2546cd5532de0fae7a481f34a1ca2253737d4cd1000f6b713dc733f770"},
+]
+
+[package.dependencies]
+tensorflow = ">=2.21,<2.22"
+
+[[package]]
 name = "tqdm"
 version = "4.67.3"
 description = "Fast, Extensible Progress Meter"
@@ -3480,4 +3512,4 @@ dev = ["pytest", "setuptools"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "290d80b098c82a51aa364badcc3077cf6a4ed422bf1fd4e9ea98139828366986"
+content-hash = "4bb86c08e82fce082d60d56713caa96fb3dc8e96ba7f5ba14676be1b10190755"
