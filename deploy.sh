@@ -95,7 +95,6 @@ detect_deploy_branch() {
 # ----------------------------
 command -v git     >/dev/null 2>&1 || fail "git is not installed"
 command -v python3 >/dev/null 2>&1 || fail "python3 is not installed"
-command -v pip3    >/dev/null 2>&1 || fail "pip3 is not installed"
 command -v pm2     >/dev/null 2>&1 || fail "pm2 is not installed"
 
 python3 -c "import sys; assert sys.version_info >= (3,11), 'Python 3.11+ required'" \
