@@ -139,18 +139,18 @@ PYTHON="${REPO_ROOT}/${VENV_DIR}/bin/python3"
 
 log "Deploying service via PM2 (${PM2_NAME})..."
 if pm2 describe "${PM2_NAME}" >/dev/null 2>&1; then
-  log "Restarting existing PM2 process: ${PM2_NAME}..."
-  pm2 restart "${PM2_NAME}" --update-env
-else
-  log "Starting new PM2 process: ${PM2_NAME}..."
-  pm2 start "${PYTHON}" \
-    --name "${PM2_NAME}" \
-    --cwd "${REPO_ROOT}" \
-    --output "${REPO_ROOT}/logs/out.log" \
-    --error "${REPO_ROOT}/logs/err.log" \
-    --log-date-format "YYYY-MM-DD HH:mm:ss" \
-    -- -m uvicorn main:app --app-dir src --host 0.0.0.0 --port 8000
+  log "Deleting existing PM2 process: ${PM2_NAME}..."
+  pm2 delete "${PM2_NAME}"
 fi
+
+log "Starting PM2 process: ${PM2_NAME}..."
+pm2 start "${PYTHON}" \
+  --name "${PM2_NAME}" \
+  --cwd "${REPO_ROOT}" \
+  --output "${REPO_ROOT}/logs/out.log" \
+  --error "${REPO_ROOT}/logs/err.log" \
+  --log-date-format "YYYY-MM-DD HH:mm:ss" \
+  -- -m uvicorn main:app --app-dir src --host 0.0.0.0 --port 8000
 
 pm2 save
 
