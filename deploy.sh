@@ -134,8 +134,8 @@ log "Installing/updating dependencies..."
 # ----------------------------
 # 3) Start or restart via PM2
 # ----------------------------
-UVICORN="${REPO_ROOT}/${VENV_DIR}/bin/uvicorn"
-[[ -f "${UVICORN}" ]] || fail "uvicorn not found in venv after install"
+PYTHON="${REPO_ROOT}/${VENV_DIR}/bin/python3"
+[[ -f "${PYTHON}" ]] || fail "python3 not found in venv after install"
 
 log "Deploying service via PM2 (${PM2_NAME})..."
 if pm2 describe "${PM2_NAME}" >/dev/null 2>&1; then
@@ -143,13 +143,13 @@ if pm2 describe "${PM2_NAME}" >/dev/null 2>&1; then
   pm2 restart "${PM2_NAME}" --update-env
 else
   log "Starting new PM2 process: ${PM2_NAME}..."
-  pm2 start "${UVICORN}" \
+  pm2 start "${PYTHON}" \
     --name "${PM2_NAME}" \
     --cwd "${REPO_ROOT}" \
     --output "${REPO_ROOT}/logs/out.log" \
     --error "${REPO_ROOT}/logs/err.log" \
     --log-date-format "YYYY-MM-DD HH:mm:ss" \
-    -- main:app --app-dir src --host 0.0.0.0 --port 8000
+    -- -m uvicorn main:app --app-dir src --host 0.0.0.0 --port 8000
 fi
 
 pm2 save
