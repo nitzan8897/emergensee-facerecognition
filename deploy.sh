@@ -120,6 +120,8 @@ validate_env_files
 # ----------------------------
 # 2) Python venv + dependencies
 # ----------------------------
+mkdir -p "${REPO_ROOT}/logs"
+
 log "Setting up Python virtual environment at ${VENV_DIR}..."
 if [[ ! -d "${VENV_DIR}" ]]; then
   python3 -m venv "${VENV_DIR}"
@@ -144,6 +146,9 @@ else
   pm2 start "${UVICORN}" \
     --name "${PM2_NAME}" \
     --cwd "${REPO_ROOT}" \
+    --output "${REPO_ROOT}/logs/out.log" \
+    --error "${REPO_ROOT}/logs/err.log" \
+    --log-date-format "YYYY-MM-DD HH:mm:ss" \
     -- main:app --app-dir src --host 0.0.0.0 --port 8000
 fi
 
