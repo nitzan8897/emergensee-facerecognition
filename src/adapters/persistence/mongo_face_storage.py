@@ -45,7 +45,7 @@ class MongoFaceStorage(FaceStoragePort):
     def _write_to_disk(self, identity: str, image_bytes: bytes) -> None:
         identity_dir = self._face_db_path / identity
         identity_dir.mkdir(parents=True, exist_ok=True)
-        (identity_dir / f"{identity}_{int(time.time())}.jpg").write_bytes(image_bytes)
+        (identity_dir / f"{identity}_{time.time_ns()}.jpg").write_bytes(image_bytes)
 
     def _delete_from_disk(self, identity: str) -> None:
         identity_dir = self._face_db_path / identity
