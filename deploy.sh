@@ -143,6 +143,10 @@ if pm2 describe "${PM2_NAME}" >/dev/null 2>&1; then
   pm2 delete "${PM2_NAME}"
 fi
 
+ENV_FILE="${REPO_ROOT}/.env"
+MONGO_URI="$(get_env_value "${ENV_FILE}" "MONGO_URI")"
+MONGO_DB_NAME="$(get_env_value "${ENV_FILE}" "MONGO_DB_NAME")"
+
 log "Starting PM2 process: ${PM2_NAME}..."
 pm2 start "${PYTHON}" \
   --name "${PM2_NAME}" \
@@ -150,7 +154,13 @@ pm2 start "${PYTHON}" \
   --output "${REPO_ROOT}/logs/out.log" \
   --error "${REPO_ROOT}/logs/err.log" \
   --log-date-format "YYYY-MM-DD HH:mm:ss" \
-  -- -m uvicorn main:app --app-dir src --host 0.0.0.0 --port 8000
+  --env PYTHONPATH="${REPO_ROOT}/src" \
+  --env MONGO_URI="${MONGO_URI}" \
+  --env MONGO_DB_NAME="${MONGO_DB_NAME}" \
+  --env ENVIRONMENT=production \
+  --env HOST=0.0.0.0 \
+  --env PORT=8000 \
+  -- -m uvicorn main:app --app-dir src --host 0.0.0.0 --port 8000 --root-path /face
 
 pm2 save
 
