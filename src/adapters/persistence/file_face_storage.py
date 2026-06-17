@@ -22,7 +22,7 @@ class FileFaceStorage(FaceStoragePort):
     def _save_sync(self, identity: str, image_bytes: bytes) -> None:
         identity_dir = self._db_path / identity
         identity_dir.mkdir(parents=True, exist_ok=True)
-        (identity_dir / f"{identity}_{int(time.time())}.jpg").write_bytes(image_bytes)
+        (identity_dir / f"{identity}_{time.time_ns()}.jpg").write_bytes(image_bytes)
 
     def _delete_sync(self, identity: str) -> bool:
         identity_dir = self._db_path / identity
