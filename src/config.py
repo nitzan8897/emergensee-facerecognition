@@ -46,6 +46,7 @@ class Settings(BaseSettings):
     recognition_timeout: float = Field(default=30.0, gt=0.0)
     mongo_uri: str = Field(default="mongodb://localhost:27017")
     mongo_db_name: str = Field(default="emergensee")
+    emergensee_mongo_uri: str = Field(default="")
 
 
 @lru_cache(maxsize=1)

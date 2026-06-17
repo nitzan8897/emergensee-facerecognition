@@ -19,10 +19,17 @@ from api.schemas.face_schemas import (
     RegisterResponse,
 )
 from application.delete_face import DeleteFaceUseCase
+from application.delete_user_face import DeleteUserFaceUseCase
 from application.detect_faces import DetectFacesUseCase
 from application.recognize_faces import RecognizeFacesUseCase
 from application.register_face import RegisterFaceUseCase
-from dependencies import get_delete_use_case, get_detect_use_case, get_recognize_use_case, get_register_use_case
+from dependencies import (
+    get_delete_use_case,
+    get_delete_user_face_use_case,
+    get_detect_use_case,
+    get_recognize_use_case,
+    get_register_use_case,
+)
 
 router = APIRouter(prefix="/api/v1/faces", tags=["faces"])
 
@@ -144,6 +151,26 @@ async def register_face_batch(
 
     normalized = name.strip().lower().replace(" ", "_")
     return BatchRegisterResponse(registered_as=normalized, frames_accepted=accepted, frames_rejected=rejected)
+
+
+@router.delete(
+    "/user/{user_id}",
+    response_model=DeleteResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Delete a registered face by user ID",
+    description="Removes the face_db folder and registered_faces records for the given user ID from disk and both databases.",
+)
+async def delete_user_face(
+    user_id: str,
+    use_case: Annotated[DeleteUserFaceUseCase, Depends(get_delete_user_face_use_case)],
+) -> DeleteResponse:
+    deleted = await use_case.execute(user_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User ID '{user_id}' not found.",
+        )
+    return DeleteResponse(deleted=user_id)
 
 
 @router.delete(
